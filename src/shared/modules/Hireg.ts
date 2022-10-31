@@ -1,10 +1,12 @@
 import { RunService, Workspace } from "@rbxts/services";
 import { shallowClone } from "./tableUtils";
-import World from "./World";
+import World, { WorldEntity } from "./World";
 
 namespace Hireg {
 
     type ColliderType = 'Polygon' | 'Point'
+
+    type HitBufferType = Map<WorldEntity, true>
 
     type HitRegistrableObject = Model & {
         hitMarkers: Folder & {[k in ColliderType]: Attachment} //naturally, k would be the instance name
@@ -18,7 +20,7 @@ namespace Hireg {
             this.lastRegistry = point.WorldPosition;
         }
 
-        updateCheck(searchList: World.WorldEntity[]): RaycastResult | undefined {
+        updateCheck(searchList: World.WorldEntity[], hitBuffer: HitBufferType): [RaycastResult, World.WorldEntity] | undefined {
             const ignoreParams = new RaycastParams()
             ignoreParams.FilterDescendantsInstances = searchList.map((v) => v.instance);
             
@@ -26,7 +28,13 @@ namespace Hireg {
         
             if (!result) return;
 
-            return result;
+            for (let v of searchList) {
+                if (result.Instance.IsDescendantOf(v.instance)) {
+                    if (hitBuffer.get(v)) return;
+                    hitBuffer.set(v, true);
+                    return [result, v];
+                }
+            }
         }
     }
 
@@ -42,6 +50,9 @@ namespace Hireg {
 
     class HiregRegister {
         active: boolean = false;
+
+        hitBuffer: HitBufferType = new Map()
+
         constructor(public points: HiPoint[]) {}
 
         /**
@@ -54,6 +65,7 @@ namespace Hireg {
         }
 
         activate() {
+            this.hitBuffer.clear();
             this.active = true;
 
             let hasConnected = false;
@@ -61,7 +73,7 @@ namespace Hireg {
             let step = RunService.Heartbeat.Connect((dt) => {
                 if (hasConnected) {step.Disconnect(); return;}
                 for (let point of this.points) {
-                    point.updateCheck(shallowClone(World.WorldRegistry.entities))
+                    point.updateCheck(shallowClone(World.WorldRegistry.entities), this.hitBuffer)
                 }
             })
         }
