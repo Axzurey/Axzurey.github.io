@@ -15,12 +15,6 @@ namespace World {
     export abstract class WorldRegistry {
         static entities: WorldEntity[] = [];
     }
-
-    let c = new WorldEntity(new Instance("Model"))
-
-    if (entityHasProperty(c, 'hello', Color3)) {
-        
-    }
 }
 
 export = World;
