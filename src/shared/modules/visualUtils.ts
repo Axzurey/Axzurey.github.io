@@ -21,6 +21,7 @@ namespace visualUtils {
         
         let a0 = new Instance('Attachment');
         let a1 = new Instance('Attachment');
+
         a0.Parent = visualPart;
         a1.Parent = visualPart;
         b.Parent = visualPart;
@@ -28,9 +29,17 @@ namespace visualUtils {
         a0.WorldPosition = p0;
         a1.WorldPosition = p1;
 
+        b.Attachment0 = a0;
+        b.Attachment1 = a1;
+
         b.Color = new ColorSequence(generateRandomColor3());
 
         b.Transparency = new NumberSequence(0)
+
+        b.FaceCamera = true;
+        b.Width0 = .2;
+        b.Width1 = .2;
+        b.LightEmission = 100;
 
         task.delay(lifeTime, () => {
             b.Destroy();

@@ -103,10 +103,12 @@ namespace Hireg {
                     let res: [RaycastResult, WorldEntity][] = []
 
                     differences.forEach((v) => {
-                        repeatRaycheckTillNull(v[0], v[1], World.WorldRegistry.entities, this.hitBuffer);
+                        let r = repeatRaycheckTillNull(v[0], v[1], World.WorldRegistry.entities, this.hitBuffer);
+                        
+                        r.forEach(v => res.push(v));
 
                         if (this.debug) {
-                            visualUtils.drawBeamLine(v[0], v[1], .5); //TODO: doesn't work?
+                            visualUtils.drawBeamLine(v[0], v[1], .5);
                         }
                     })
 
