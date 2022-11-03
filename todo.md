@@ -1,0 +1,1 @@
+* make swing animation cover more area.

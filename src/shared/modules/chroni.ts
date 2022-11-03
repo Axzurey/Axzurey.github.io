@@ -1,8 +1,5 @@
 import { RunService, TweenService } from "@rbxts/services";
-import { colorfulAnimation } from "./colorful";
 import mathf, { lerp } from "./mathf";
-import { deserialize, serialize } from "./serenity";
-import { popIndex } from "./sweep";
 
 //time, begin, change (target - begin), duration
 
@@ -28,7 +25,7 @@ export function getInterpolation<T extends interpolableTypes>(v0: T, v1: T, star
     }
 }
 
-export class valueRef<T extends interpolableTypes> {
+export class valueRef<T extends any> {
     constructor(private value: T) {};
     public getValue(): T {return this.value};
     public setValue(value: T) {this.value = value};
@@ -36,7 +33,7 @@ export class valueRef<T extends interpolableTypes> {
 
 export type interpolableTypes = CFrame | Vector3 | number | Color3
 
-export function useValue<T extends interpolableTypes>(initial: T) {
+export function useValue<T extends any>(initial: T) {
     return new valueRef<T>(initial);
 }
 

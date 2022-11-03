@@ -1,4 +1,5 @@
 import { RunService, Workspace } from "@rbxts/services";
+import system from "shared/env/system";
 import { shallowClone, spreadFill } from "./tableUtils";
 import visualUtils from "./visualUtils";
 import World, { WorldEntity, WorldRegistry } from "./World";
@@ -88,8 +89,8 @@ namespace Hireg {
 
             let hasConnected = false;
             
-            let step = RunService.Heartbeat.Connect((dt) => {
-                if (hasConnected) {step.Disconnect(); return;}
+            let step = system.runtime.onHeartbeat.connect((dt) => {
+                if (hasConnected) {step.disconnect(); return;}
                 
                 for (let [i, point] of pairs(this.points)) {
 

@@ -6,7 +6,7 @@ export function popIndex<T extends any[], I extends number>(a: T, index: I): Pop
 }
 
 export class animationCompiler {
-    animation: Animation
+    private animation: Animation
     private constructor(public id: string) {
         this.animation = new Instance("Animation");
         this.animation.AnimationId = id;

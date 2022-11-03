@@ -1,4 +1,4 @@
-import { ReplicatedStorage, RunService } from "@rbxts/services";
+import { Players, ReplicatedStorage, RunService } from "@rbxts/services";
 import tree, { castTree } from "shared/modules/tree";
 
 namespace environment {
@@ -18,6 +18,14 @@ namespace environment {
             }
         }
     } as const;
+
+    export function getClient() {
+        return Players.LocalPlayer;
+    }
+    
+    export function getClientCharacter() {
+        return Players.LocalPlayer.Character;
+    }
 
     export const env = RunService.IsServer()? tree.createTree(tree.createFolder('sharedEnvironment', ReplicatedStorage), bothType) :
         ReplicatedStorage.WaitForChild('sharedEnvironment') as castTree<Folder, typeof bothType>;

@@ -1,0 +1,2 @@
+longswordIdle: https://www.roblox.com/library/11456767438/longsword-idle
+longswordSwing: https://www.roblox.com/library/11456987689/Longsword-Swing

@@ -1,8 +1,37 @@
 import { RunService } from "@rbxts/services";
+import { useValue } from "shared/modules/chroni";
+import connection from "shared/modules/connection";
 import { GetGenericOfClassClient, GetGenericOfClassServer } from "shared/modules/remoteProtocol";
 import protocols from "./protocols";
 
 namespace system {
+    export namespace runtime {
+        export const onRender = new connection<(dt: number) => void>();
+        export const onStep = new connection<(t: number, dt: number) => void>();
+        export const onHeartbeat = new connection<(dt: number) => void>();
+
+        const timeStep = useValue(1); //default is 1x time speed.
+
+        const timePaused = useValue(false);
+
+        if (RunService.IsClient()) {
+            const renderConnection = RunService.RenderStepped.Connect((dt) => {
+                if (timePaused.getValue()) return;
+                onRender.fire(dt * timeStep.getValue());
+            })
+        }
+
+        const stepConnection = RunService.Stepped.Connect((t, dt) => {
+            if (timePaused.getValue()) return;
+            onStep.fire(t, dt * timeStep.getValue())
+        })
+
+        const heartbeatConnection = RunService.Heartbeat.Connect((dt) => {
+            if (timePaused.getValue()) return;
+            onHeartbeat.fire(dt * timeStep.getValue());
+        })
+    }
+
     export namespace client {
         export function invokeProtocol<T extends keyof typeof protocols>(
             protocol: T, ...args: Parameters<GetGenericOfClassClient<(typeof protocols)[T]["protocol"]>>) {
